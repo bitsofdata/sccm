@@ -1,0 +1,6 @@
+#########################################################################################
+Query on a device collection to grab devices that have a speicific Google Chrome version
+#########################################################################################
+InstalledSoftware | 
+WHERE (ProductName == 'Google Chrome') and ProductVersion !contains '93.0' | project Device, ProductName, ProductVersion | 
+JOIN Registry('hklm:\\System\\ControlSet001\\Services\\Netlogon\\Parameters') | WHERE Property == 'DynamicSiteName'
