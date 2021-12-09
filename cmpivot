@@ -1,6 +1,16 @@
 #########################################################################################
 Query on a device collection to grab devices that have a speicific Google Chrome version
 #########################################################################################
-InstalledSoftware | 
-WHERE (ProductName == 'Google Chrome') and ProductVersion !contains '93.0' | project Device, ProductName, ProductVersion | 
+InstalledSoftware | WHERE (ProductName == 'Google Chrome') and ProductVersion !contains '93.0' | project Device, ProductName, ProductVersion | 
 JOIN Registry('hklm:\\System\\ControlSet001\\Services\\Netlogon\\Parameters') | WHERE Property == 'DynamicSiteName'
+
+
+#########################################################################################################################
+Query on a device collection to grab devices with OS version that do not equal specified version and their site boundary
+#########################################################################################################################
+
+OperatingSystem | WHERE Version !like '10.0.19042'  
+| JOIN (computersystem )| project device,Model,Username 
+| JOIN (IPConfig | project device, IPV4Address) 
+| JOIN (OperatingSystem | project device, Version)
+| JOIN Registry('hklm:\\System\\ControlSet001\\Services\\Netlogon\\Parameters') | WHERE Property == 'DynamicSiteName'
